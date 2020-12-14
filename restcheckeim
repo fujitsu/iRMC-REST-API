@@ -1,0 +1,15 @@
+#!/bin/bash
+#
+# restcheckeim: Pruefen, ob eIM image bereits auf eLCM SD-Karte ist
+#
+# (c) Juergen Orth - Fujitsu Technology Solutions GmbH
+#
+# $Id: restcheckeim 75 2020-08-12 16:21:47Z HMBJOrth $
+
+[ $0 == bash ] && DIR=. || DIR=${0%/*}
+. ${DIR}/restoptions
+. ${DIR}/resttool
+
+RestGet rest/v1/Oem/eLCM/SVIM | awk -F\" '
+	/^HTTP.* 404/ { printf("No eIM version found!\n"); exit(1) }
+	/"Version"/   { printf("eIM version %s found.\n", $4)}'

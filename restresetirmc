@@ -1,0 +1,26 @@
+#!/bin/bash
+#
+# restresetirmc: tool for resetting iRMC
+#
+# (c) Juergen Orth - Fujitsu Technology Solutions GmbH
+#
+# $Id: restresetirmc 70 2020-08-11 05:59:24Z HMBJOrth $
+
+. ${0%/*}/restoptions
+. ${0%/*}/resttool
+
+BoL='\015\033[K'
+trap "echo;showinfo Operation cancelled by Ctrl-C;exit 1;" SIGINT
+
+# Reset iRMC
+showinfo "Resetting iRMC $IRMC in $RESETWAITTIME seconds! "
+showinfo "Press Ctrl-C to CANCEL"
+
+while [ $RESETWAITTIME -gt 0 ]
+do
+	echo -en ${BoL}$RESETWAITTIME
+	(( RESETWAITTIME-- ))
+	sleep 1
+done 
+echo -e ${BoL}$RESETWAITTIME
+RestPost rest/v1/Oem/iRMC/Reset

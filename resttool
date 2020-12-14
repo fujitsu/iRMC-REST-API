@@ -1,0 +1,187 @@
+#!/bin/bash
+#
+# resttool: tools for using RESTful API with Fujitsu iRMC S4/S5
+#
+# (c) Juergen Orth - Fujitsu Technology Solutions GmbH
+#
+# $Id: resttool 73 2020-08-12 10:05:13Z HMBJOrth $
+
+
+# Display timestamp and params
+showinfo() # [param ...]
+{
+	date "+%Y-%m-%d %H:%M:%S -- $*" 
+}
+
+# Output a message on stdout
+msg() # [param ...]
+{
+	showinfo $@
+}
+
+# Output an error message on stderr and exit with gven rc
+error() # rc [param ...]
+{
+	rc=$1
+	shift
+	showinfo $@ >&2
+	exit $rc
+}
+
+# Display debug info to stderr when debuglevel is appropriate
+debugmsg()
+{
+	[ $1 -le $DEBUGLEVEL ] && msg debug $@ >&2
+}
+
+# Do basic restcall via https. Result should be 2xx http code
+RestCall() # get|post|delete [param ...]
+{
+	debugmsg 2 RestCall $@
+	METHOD=${1^^}
+	shift
+	debugmsg 3  curl -s -k -u $USER:$PW -H "Accept: application/json" -X $METHOD -i https://${IRMC}/$@
+	curl -s -k -u $USER:$PW -H "Accept: application/json" -X $METHOD -i https://${IRMC}/$@	| tee /tmp/RestCall.log
+        RC=$(awk '/^HTTP/ { RC=$2; } END { print RC }' /tmp/RestCall.log)
+	[ -z "$RC" ] && RC=999
+	[ $(expr match $RC '^2[0-9][0-9]$') -eq 0 ] && error 1 HTTP Error $RC
+}
+
+# Perform RestCall with method get
+RestGet() # [param ...]
+{
+	RestCall GET $@
+}
+
+# Perform RestCall with method post
+RestPost() # [param ...]
+{
+	RestCall POST $@
+}
+
+# Perform RestCall with method put
+RestPut() # [param ...]
+{
+	RestCall PUT $@
+}
+
+# Perform RestCall with method delete
+RestDelete() # [param ...]
+{
+	RestCall DELETE $@
+}
+
+# Read value of given key in json string
+ReadJsonValue() # key 
+{
+	awk -F: '/'$1'/ { print $2 }' | tr -d ',"'
+}
+
+# Get all running sessions
+SessionList()
+{
+	debugmsg 1 SessionList
+	RestGet sessionInformation
+}
+
+# Get session status
+SessionStatus() # sessionid
+{
+	debugmsg 1 SessionStatus $1
+	RestGet sessionInformation/$1/status
+}
+
+# Get session log
+SessionLog() # sessionid
+{
+	debugmsg 1 SessionLog $1
+	RestGet sessionInformation/$1/log
+}
+
+# Terminate a session
+SessionTerminate() # sessionid
+{
+	debugmsg 1 SessionTerminate $1
+	RestDelete sessionInformation/$1/terminate
+}
+
+# Delete a session
+SessionDelete() # sessionid
+{
+	debugmsg 1 SessionDelete $1
+	RestDelete sessionInformation/$1/remove
+}
+
+# Wait for session to turn to status "terminated regularly"
+SessionWait() # sessionid
+{
+	debugmsg 1 SessionWait $1
+	[ "$1" ] || error 1 No session ID
+	STATUS="?"
+	until [ "${STATUS%% *}" == "terminated" ]
+	do
+		STATUS="$(SessionStatus $1 | ReadJsonValue \"Status\")"
+		debugmsg 3 $STATUS
+		sleep 3
+		echo -n .
+	done
+	echo
+	showinfo Session $1 finished with status: $STATUS
+}
+
+# List all profiles in profile store
+ProfileStoreList()
+{
+	debugmsg 1 ProfileStoreList
+ 	RestGet rest/v1/Oem/eLCM/ProfileManagement
+}
+
+# Get profile from store
+ProfileStoreGet() # profile
+{
+	debugmsg 1 ProfileStoreGet ${1##*/}
+	RestGet rest/v1/Oem/eLCM/ProfileManagement/${1##*/}
+}
+
+# Copy running profile to store
+ProfileStoreAdd() # profile
+{
+	debugmsg 1 ProfileStoreAdd $1
+	RestPost rest/v1/Oem/eLCM/ProfileManagement/get?PARAM_PATH=$1 | ReadJsonValue '"Id":'
+}
+
+# Delete profile from store
+ProfileStoreDelete() # profile
+{
+	debugmsg 1 ProfileStoreDelete ${1##*/}
+	RestDelete rest/v1/Oem/eLCM/ProfileManagement/${1##*/}
+}
+
+# Assign profile
+ProfileChange() # filename [option]
+{
+	debugmsg 1 ProfileChange $1
+	[ -r "$1" ] || error 1 "File $1 not readable"
+	RestPost rest/v1/Oem/eLCM/ProfileManagement/set$2 --data @$1 | ReadJsonValue '"Id":' 
+}
+
+# Upload Custom Image to eLCM
+CustomImageUpload() # url_of_image
+{	
+	debugmsg 1 CustomImageUpload $1
+	RestPost "rest/v1/Oem/eLCM/CustomImage?file=$IMAGE&bootEnvironment=auto&tag=jotest" | ReadJsonValue '"Id":'
+}
+
+# Boot Custom Image
+CustomImageBoot() # ImageName
+{	
+	debugmsg 1 CustomImageBoot $1
+	RestPut "rest/v1/Oem/eLCM/CustomImage/$1" | ReadJsonValue '"Id":'
+}
+
+# Delete Custom Image
+CustomImageDelete() # ImageName
+{	
+	debugmsg 1 CustomImageDelete $1
+	RestDelete "rest/v1/Oem/eLCM/CustomImage/$1"
+}

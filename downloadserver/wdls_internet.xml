@@ -1,0 +1,13 @@
+	<Repository>
+		<Server>
+			<URL>https://webdownloads.ts.fujitsu.com</URL>
+			<UseProxy>yes</UseProxy>
+		</Server>
+		<Proxy>
+			<URL>172.25.161.100</URL>
+			<Port>81</Port>
+			<User></User>
+			<Password></Password>
+		</Proxy>
+	</Repository>
+

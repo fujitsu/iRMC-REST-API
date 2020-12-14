@@ -1,0 +1,86 @@
+#!/bin/bash
+#
+# restoptions: tools for using RESTful API with Fujitsu iRMC S4/S5
+#
+# (c) Juergen Orth - Fujitsu Technology Solutions GmbH
+#
+# $Id: restoptions 75 2020-08-12 16:21:47Z HMBJOrth $
+
+################################################################################
+#
+# Default-Settings
+# ================
+#
+# Can/should be adjusted according to user preferences
+#
+################################################################################
+# iRMC settings
+IRMC=10.172.124.225 		# iRMC name or IP address
+USER=admin			# iRMC user with administrator right
+PW=${DCDEFAULTPW:-admin}	# iRMC password
+
+# Profile settings
+DEFAULTPROFILE=IrmcConfig/BootConfig
+JSON=profile.json		# Filename of profile json string
+POSTOPTION=""			# Option for Post (inhibit reboot)
+
+# Custom image settings
+CUSTOMIMAGEURLPATH="http://10.172.125.100/DownloadManager/globalflash/iso"
+CUSTOMIMAGENAME=customimage
+CUSTOMIMAGESUFFIX="iso"
+
+# Deploy settings
+DEFAULTOSID=3
+DEFAULTOS=deploy/esxi67u3_IDE_m2.json
+
+# Reset options
+RESETWAITTIME=10		# Waittime before performing reset
+
+# Debug settings
+DEBUGLEVEL=0			# Debuglevel: 0=nothing, 1=low, 2=medium, 3=high
+
+################################################################################
+#
+# End of user settings - DON'T CHANGE LINES BELOW!
+#
+################################################################################
+
+PROGNAME=${0##*/}
+case $PROGNAME in
+	restgetprofile) PARAMOPT="[-f <filename> ($JSON)] [<profilename> ($DEFAULTPROFILE)]";;
+	restsetprofile) PARAMOPT="[-n (noreboot)] [<filename> ($JSON)]";;
+	restloadsvim)   PARAMOPT="[<OsTypeId> ($DEFAULTOSID)]";;
+	restsetdeploy)  PARAMOPT="<DeployParam.xml>";;
+	restdeployos)	PARAMOPT="<filename> ($DEFAULTOS)]";;
+	restrun)	PARAMOPT="<function> [param ..]";;
+	restuploadci)	PARAMOPT="<http(s)-URL>";;
+	restbootci)	PARAMOPT="<customimagefile_without_iso>";;
+	restdeleteci)	PARAMOPT="<customimagefile_without_iso>";;
+	restgetbootmac) PARAMOPT="[onboard|lom] [port] # port>=1";;
+	chasset)	PARAMOPT="[asset entries]";;
+	*)		PARAMOPT="";;
+esac
+
+# Display usage
+usage()
+{
+	echo "Usage: ${0##*/} [-h (help)] [-i <iRMC name/IP> ($IRMC)] [-u <user> ($USER)] [-p <password> ($PW)] [-d <debuglevel> ($DEBUGLEVEL)] " $PARAMOPT >&2
+	exit 2
+}
+
+# Evaluate commandline parameters
+while getopts "i:u:p:f:nd:h" OPT
+do
+	case $OPT in
+		i) IRMC=$OPTARG;;
+		u) USER=$OPTARG;;
+		p) PW=$OPTARG;;
+		f) JSON=$OPTARG;;
+		d) DEBUGLEVEL=$OPTARG;;
+		n) POSTOPTION="?inhibit_reboot";;
+		h) usage;;
+		?) usage;;
+	esac
+done
+shift $(($OPTIND-1))
+

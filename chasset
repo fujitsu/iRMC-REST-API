@@ -1,0 +1,28 @@
+#!/bin/bash
+#
+# chasset: tool for changing asset entry
+#
+# (c) Juergen Orth - Fujitsu Technology Solutions GmbH
+#
+# $Id: chasset 80 2020-11-25 12:11:26Z HMBJOrth $
+
+. ${0%/*}/restoptions
+. ${0%/*}/resttool
+
+showinfo "Setting asset tag to \"$*\""
+
+echo '{
+  "Server":{
+    "SystemConfig":{
+      "IrmcConfig":{
+	"@Processing":"execute",
+        "System":{
+          "AssetTag":"'$*'"
+        },
+        "@Version":"1.04"
+      }
+    },
+    "@Version":"1.01"
+  }
+}
+' | ${0%/*}/restsetprofile -i $IRMC -u $USER -p "$PW" -d $DEBUGLEVEL /dev/fd/0

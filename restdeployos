@@ -1,0 +1,17 @@
+#!/bin/bash
+# 
+# restdeployos: Installiere OS anhand Infos in json file
+#
+# (c) Juergen Orth - Fujitsu Technology Solutions GmbH
+#
+# $Id: restdeployos 75 2020-08-12 16:21:47Z HMBJOrth $
+
+. ${0%/*}/restoptions
+. ${0%/*}/resttool
+
+if restchecksvim
+then
+	restsetprofile -i $IRMC -u $USER -p "$PW" -d $DEBUGLEVEL ${1:-$DEFAULTOS}
+else
+	showinfo Please upload eIM image image first by command restloadeim
+fi

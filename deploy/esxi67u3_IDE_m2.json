@@ -1,0 +1,107 @@
+{
+    "Server" : {
+      "@ErrorBehaviour" : "Stop",
+      "@Version" : "1.01",
+      "@ServicePlatformBootMode" : "UEFI",
+      "HWConfiguration" : {
+        "@Processing" : "execute",
+        "@Version" : "1.02",
+        "Adapters": {
+            "IDEAdapter": "IDE1"
+        },
+        "System" : {
+          "ModelType" : {
+            "#text" : "PRIMERGY RX2540 M5"
+          }
+        }
+      },
+      "OSInstallation" : {
+        "@Processing" : "execute",
+        "@Version" : "1.03",
+        "OSType" : {
+          "Category" : "Linux",
+          "Type" : "VMware ESX",
+          "Architecture" : "x64",
+          "Version" : "6.7",
+          "Update" : "3"
+        },
+        "LinuxParameters": {
+            "InstallationParameters": {
+                "OsRemotePath": "ftp://10.172.124.108/iso-custom/esxi67u3",
+                "OsRemoteUsername": "anonymous",
+                "OsRemotePassword": {
+                    "@Encryption": "plain",
+                    "#text": "test@test.com"
+                }
+            },
+            "License": {
+                "Accepted": true
+            },
+            "Localization": {
+                "TimeZone": "Europe/Berlin",
+                "HWClock": "UTC",
+                "Language": "English (US)",
+                "Keyboard": "English (US)"
+            },
+            "UserData": {
+                "AdminPassword": {
+                    "@Encryption": "plain",
+                    "#text": "pccPcc12x"
+                }
+            },
+            "NetWork": {
+                "HostName": {
+                    "ByDHCP": false,
+					"Name": "rx2540m5-jojh"
+                },
+                "Interfaces": {
+                    "Interface": {
+                        "Identifier": "4C:52:62:2B:C7:DA",
+                        "IPv4": {
+                            "DHCP": "Disabled",
+							"Address": "10.172.124.224",
+							"SubnetMask": "255.255.252.0",
+							"DefaultGateway": "10.172.124.1",
+                                "DNS": {
+                                        "DomainName": "bupc-test.hmb.fsc.net",
+                                        "Servers": {
+                                                "Server":[
+                                                        {
+                                                                "@Number":1,
+                                                                "#text":"10.172.124.118"
+                                                        }
+                                                ]
+                                        }
+                                }
+
+                        }
+                    }
+                }
+            }
+        },
+        "DiskConfiguration" : {
+          "Volumes" : {
+            "@type" : "std",
+			"LogicalDiskRef": {
+                "@LogicalDiskNumber": 0,
+                "@type": "SATA"
+            },
+            "Volume" : [ {
+              "@idx" : 0,
+              "@type" : "std",
+              "Mount" : "/boot",
+              "FileSystem" : "vmfs6",
+              "Size" : {
+                "@Unit" : "MB",
+                "#text" : "1024"
+              },
+              "AsPrimary" : true
+            } ]
+          }
+        },
+        "Applications" : {
+          "Selection" : "Minimal"
+        }
+      }
+    }
+}

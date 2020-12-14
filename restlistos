@@ -1,0 +1,30 @@
+#!/bin/bash
+# 
+# restlistos: Anzeigen der supporteten Betriebssysteme
+#
+# (c) Juergen Orth - Fujitsu Technology Solutions GmbH
+#
+# $Id: restlistos 70 2020-08-11 05:59:24Z HMBJOrth $
+
+. ${0%/*}/restoptions
+. ${0%/*}/resttool
+
+showinfo Updating catalog on $IRMC ...
+RestPost rest/v1/Oem/eLCM/SVIM/GetOsTypeSupport >/dev/null
+showinfo Displaying catalog ...
+RestGet rest/v1/Oem/eLCM/SVIM/OSTypes | awk -F: '
+	/"@Id"/             {Id=$2}
+	/"OsType"/          {OS=$2}
+	/"PlatformVersion"/ {Version=$2
+		gsub(/"/,"",Version)
+		gsub(/"/,"",OS)
+		gsub(/,$/,"",OS)
+		if (first==0) {
+			printf("Plattformversion: %s \n\nId Operating system\n== ===================================\n",Version)
+			first=1
+		}
+	 printf("%2d %s\n", Id,OS) }' | sort -un
+# sort will be obsolet with iRMC v3 ;-)
+
+
+

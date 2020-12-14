@@ -1,0 +1,15 @@
+#!/bin/bash
+#
+# restgetmac: tool for getting MAC addresses of all NICs via RESTful API
+#
+# (c) Juergen Orth - Fujitsu Technology Solutions GmbH
+#
+# $Id: restgetmac 67 2020-08-11 05:26:34Z HMBJOrth $
+
+. ${0%/*}/restoptions
+. ${0%/*}/resttool
+
+RestGet rest/v1/Oem/NICLink/status | \
+	awk -F'"' '
+		/MAC/      { printf("%s ", $4) }
+		/Location/ { printf("%s\n",$4) }'

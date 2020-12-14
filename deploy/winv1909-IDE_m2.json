@@ -1,0 +1,135 @@
+{
+        "Server" : {
+          "@ErrorBehaviour" : "Stop",
+          "@Version" : "1.01",
+          "@ServicePlatformBootMode" : "UEFI",
+          "HWConfiguration" : {
+            "@Processing" : "execute",
+            "@Version" : "1.02",
+            "Adapters" : {
+              "IDEAdapter" : "IDE1"
+            },
+            "System" : {
+              "ModelType" : {
+                "#text" : "PRIMERGY RX2540 M5"
+              }
+            }
+          },
+          "OSInstallation" : {
+            "@Processing" : "execute",
+            "@Version" : "1.03",
+            "OSType" : {
+              "Category" : "Windows",
+              "Type" : "MS Windows Server, Version 1909",
+              "Architecture" : "x64",
+              "Edition" : "Datacenter",
+              "CoreVersion" : true,
+              "OEMMediumType" : "Microsoft",
+              "SetupLanguage" : "English",
+              "Update" : "first release",
+              "ProductId" : {
+                "@Encryption" : "plain"
+              }
+            },
+            "WindowsParameters" : {
+              "InstallationParameters" : {
+                "OsRemotePath" : "ftp://10.172.124.108/iso-custom/winv1909/",
+                "OsRemoteUsername": "anonymous",
+                "OsRemotePassword": {
+                    "@Encryption": "plain",
+                    "#text": "test@test.com"
+                }
+              },
+              "NetworkParticipation": {
+                "ParticipatesIn": "domain",
+                "DomainName": "bupc-test.hmb.fsc.net",
+                "DomainUser": "administrator",
+                "DomainPassword": {
+                  "@Encryption": "plain",
+                  "#text" : "pccpcc"
+                }
+              },
+              "Localization" : {
+                "TimeZone" : "W. Europe Standard Time",
+                "Language" : "English",
+                "Keyboard" : "German"
+              },
+              "Display" : {
+                "Resolution" : "1024x768",
+                "ColorDepth" : 24,
+                "RefreshRate" : 60
+              },
+              "UserData" : {
+                "ComputerName" : "rx2540m5-w2019e",
+                "Organization" : "FTS",
+                "UserName" : "Administrator",
+                "AdminPassword" : {
+                  "@Encryption" : "plain",
+                  "#text" : "Pccpccpcc8"
+                }
+              },
+              "NetWork" : {
+                "Interfaces" : {
+                  "Interface" : {
+                    "Identifier" : "4C:52:62:2B:C7:DA",
+                    "IPv4" : {
+                      "DHCP": "Disabled",
+                      "Address": "10.172.124.224",
+                      "SubnetMask": "255.255.252.0",
+                      "DefaultGateway": "10.172.124.1",
+                      "NetBiosOption" : 0,
+                      "DisableDynamicUpdate" : true,
+                      "EnableAdapterDomainNameRegistration" : true,
+                      "DNS": {
+                        "DomainName": "bupc-test.hmb.fsc.net",
+                        "Servers": {
+                          "Server": {
+                            "@Number": 1,
+                            "#text": "10.172.124.118"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              "Services" : {
+                "SNMP" : {
+                  "Enabled" : false
+                }
+              },
+              "RemoteDesktop" : {
+                "Enabled" : true
+              },
+              "RemoteAssistance" : {
+                "Enabled" : true,
+                "AllowFullControll" : true,
+                "MaxTicketExpiry" : 6
+              }
+            },
+            "DiskConfiguration" : {
+              "Volumes" : {
+                "@type" : "std",
+                "LogicalDiskRef" : {
+                  "@LogicalDiskNumber" : 0,
+                  "@type" : "SATA"
+                },
+                "Volume" : {
+                  "@idx" : 0,
+                  "@type" : "std",
+                  "Label" : "system",
+                  "FileSystem" : "NTFS",
+                  "Size" : {
+                    "@Unit" : "MB",
+                    "#text" : "auto"
+                  },
+                  "QuickFormat" : "Enabled",
+                  "UsageBoot" : true,
+                  "UsageOS" : true,
+                  "UsageData" : false
+                }
+              }
+            }
+          }
+        }
+      }
