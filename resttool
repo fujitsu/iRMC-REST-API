@@ -4,7 +4,7 @@
 #
 # (c) Juergen Orth - Fujitsu Technology Solutions GmbH
 #
-# $Id: resttool 73 2020-08-12 10:05:13Z HMBJOrth $
+# $Id: resttool 116 2022-11-09 07:57:41Z HMBJOrth $
 
 
 # Display timestamp and params
@@ -41,10 +41,11 @@ RestCall() # get|post|delete [param ...]
 	METHOD=${1^^}
 	shift
 	debugmsg 3  curl -s -k -u $USER:$PW -H "Accept: application/json" -X $METHOD -i https://${IRMC}/$@
-	curl -s -k -u $USER:$PW -H "Accept: application/json" -X $METHOD -i https://${IRMC}/$@	| tee /tmp/RestCall.log
-        RC=$(awk '/^HTTP/ { RC=$2; } END { print RC }' /tmp/RestCall.log)
+	curl -s -k -u $USER:$PW -H "Accept: application/json" -X $METHOD -i https://${IRMC}/$@	| tee /tmp/RestCall-$$.log
+        RC=$(awk '/^HTTP/ { RC=$2; } END { print RC }' /tmp/RestCall-$$.log)
 	[ -z "$RC" ] && RC=999
 	[ $(expr match $RC '^2[0-9][0-9]$') -eq 0 ] && error 1 HTTP Error $RC
+	rm /tmp/RestCall-$$.log
 }
 
 # Perform RestCall with method get

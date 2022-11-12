@@ -1,0 +1,54 @@
+#!/bin/bash
+#
+# $Id: chpw 117 2022-11-09 08:09:10Z HMBJOrth $
+#
+# Liest iRMC-Adressen von STDIN und aendert fuer den User $1 das iRMC-Passwort in $2
+#
+#
+#
+
+umask 077
+
+showinfo() # [param ...]
+{
+        date "+%Y-%m-%d %H:%M:%S -- $*"
+}
+ 
+getuseridx() # username
+{
+	jq '.Server.SystemConfig.IrmcConfig.Users.User[]|select(.BaseValues.Name=="'$1'")|.["@UserIdx"]'
+}
+
+[ $# -eq 2 ] || { echo "Usage: ${0##*/} username newpassword"; exit 1; }
+
+while read irmc restofline
+do
+	showinfo "Processing $irmc ..."
+	(
+		showinfo "Reading user settings from $irmc ..."
+		restgetprofile -i $irmc -f /tmp/u-$irmc IrmcConfig/Users
+		
+		IDX=$(getuseridx ${1} </tmp/u-$irmc)
+		[ "$IDX" ] || { echo "Username not found!"; exit 2; }
+		showinfo "Changing password for User $1 ($IDX) to ${2:-jopw} ..."
+		awk -F: -v idx=$IDX -v newpw=${2:-jopw} '
+			/"@UserIdx":/  { if ($2==idx",") 
+						flag=1
+					 else
+						flag=0 
+				       }
+			{ if (flag) { 
+				sub("IRMC","none")
+				sub("\"#text.*\"","\"#text\":\""newpw"\"")
+			  }
+			  print 
+			}' </tmp/u-$irmc >/tmp/u-new-$irmc
+		showinfo "Writing new password to $irmc ..."
+		restsetprofile -i $irmc /tmp/u-new-$irmc
+		# showinfo  "Deleting temporary files ..."
+		# rm /tmp/u-$irmc /tmp/u-new-$irmc
+	) >/tmp/log-$irmc &
+done
+showinfo "Waiting for completion ..."
+wait
+showinfo "Finished"
