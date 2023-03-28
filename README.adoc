@@ -11,7 +11,7 @@ ifdef::env-github[]
 :important-caption: :heavy_exclamation_mark:
 :caution-caption: :fire:
 :warning-caption: :warning:
-:imagesdir: https://github.com/fujitsu/iRMC-REST-API/tree/main/img
+:imagesdir: https://github.com/fujitsu/iRMC-REST-API/blob/main/img/
 endif::[]
 = iRMC RESTful Tools {version}
 
@@ -77,7 +77,7 @@ scripts described here are BASH scripts and can therefore be used natively under
 subsystem can be used. Alternatively, other tools like https://cygwin.com/[Cygwin] are also suitable
 
 == Installation
-If you've `git` you simply install this tool by 'git clone https://github.com/fujitsu/iRMC-REST-API'. Afterwards the tools is located in directory `iRMC-REST-API`. Please extend your PATH var to this directory.
+If you've `git` you simply install this tool by `git clone https://github.com/fujitsu/iRMC-REST-API`. Afterwards the tools is located in directory `iRMC-REST-API`. Please extend your PATH var to this directory.
 
 [source,shell,indent=8]
 ----
