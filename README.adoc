@@ -11,7 +11,7 @@ ifdef::env-github[]
 :important-caption: :heavy_exclamation_mark:
 :caution-caption: :fire:
 :warning-caption: :warning:
-:imagesdir: https://github.com/fujitsu/ISMtools/blob/master/img/
+:imagesdir: https://github.com/fujitsu/iRMC-REST-API/tree/main/img
 endif::[]
 = iRMC RESTful Tools {version}
 
