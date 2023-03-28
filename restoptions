@@ -4,7 +4,7 @@
 #
 # (c) Juergen Orth - Fujitsu Technology Solutions GmbH
 #
-# $Id: restoptions 75 2020-08-12 16:21:47Z HMBJOrth $
+# $Id: restoptions 174 2023-03-28 14:08:48Z HMBJOrth $
 
 ################################################################################
 #
@@ -15,9 +15,15 @@
 #
 ################################################################################
 # iRMC settings
-IRMC=10.172.124.225 		# iRMC name or IP address
-USER=admin			# iRMC user with administrator right
-PW=${DCDEFAULTPW:-admin}	# iRMC password
+IRMC=${IRMC:-10.172.124.82}
+
+# USER: iRMC User with appropriate rights (default: administrator)
+USER=${IRMC_CRED%:*}
+USER=${USER:-admin}                     # if iRMC_CRED not set use defaults
+
+# PD: Password for above USER (default: admin)
+PW=${IRMC_CRED#*:}
+PW=${PW:-${DCDEFAULTPW:-admin}} # if iRMC_CRED not set use defaults
 
 # Profile settings
 DEFAULTPROFILE=IrmcConfig/BootConfig
