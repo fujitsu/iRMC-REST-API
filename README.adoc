@@ -2,7 +2,7 @@
 :author2: Justin Langosch
 :email: Juergen.Orth@fujitsu.com
 :email2: justin.langosch@fujitsu.com
-:version: v6
+:version: v7
 :imagesdir: img/
 :toc: preamble
 ifdef::env-github[]
@@ -27,6 +27,9 @@ IMPORTANT: *#Please note: This tool set is provided W/O ANY WARRANTY and usage a
 .ChangeLog
 |=================
 |Version|Date|Author|Changes
+|7|2023-04-19|mailto:{email}[{Author}]| 
+x fixed issue with `chasset` +
+x export IRMC, USER, PW vars in `restoption`
 |6|2023-03-28|mailto:{email}[{Author}]| 
 + Security enhancement for `resttool` +
 + Some corrections in README

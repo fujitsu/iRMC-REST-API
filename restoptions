@@ -4,7 +4,7 @@
 #
 # (c) Juergen Orth - Fujitsu Technology Solutions GmbH
 #
-# $Id: restoptions 174 2023-03-28 14:08:48Z HMBJOrth $
+# $Id: restoptions 184 2023-04-20 07:36:01Z HMBJOrth $
 
 ################################################################################
 #
@@ -19,7 +19,7 @@ IRMC=${IRMC:-10.172.124.82}
 
 # USER: iRMC User with appropriate rights (default: administrator)
 USER=${IRMC_CRED%:*}
-USER=${USER:-admin}                     # if iRMC_CRED not set use defaults
+USER=${USER:-admin}     # if iRMC_CRED not set use defaults
 
 # PD: Password for above USER (default: admin)
 PW=${IRMC_CRED#*:}
@@ -27,8 +27,8 @@ PW=${PW:-${DCDEFAULTPW:-admin}} # if iRMC_CRED not set use defaults
 
 # Profile settings
 DEFAULTPROFILE=IrmcConfig/BootConfig
-JSON=profile.json		# Filename of profile json string
-POSTOPTION=""			# Option for Post (inhibit reboot)
+JSON=profile.json	# Filename of profile json string
+POSTOPTION=""		# Option for Post (inhibit reboot)
 
 # Custom image settings
 CUSTOMIMAGEURLPATH="http://10.172.125.100/DownloadManager/globalflash/iso"
@@ -40,10 +40,12 @@ DEFAULTOSID=3
 DEFAULTOS=deploy/esxi67u3_IDE_m2.json
 
 # Reset options
-RESETWAITTIME=10		# Waittime before performing reset
+RESETWAITTIME=10	# Waittime before performing reset
 
 # Debug settings
-DEBUGLEVEL=0			# Debuglevel: 0=nothing, 1=low, 2=medium, 3=high
+DEBUGLEVEL=0		# Debuglevel: 0=nothing, 1=low, 2=medium, 3=high
+
+export IRMC USER PW DEFAULTPROFILE JSON POSTOPTION CUSTOMIMAGEURLPATH CUSTOMIMAGESUFFIX DEFAULTOSID DEFAULTOS RESETWAITTIME DEBUGLEVEL
 
 ################################################################################
 #
