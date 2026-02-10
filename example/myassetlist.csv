@@ -1,4 +1,0 @@
-#Server;iRMC;RZ;Rack;User;Password;AssetTag;NTP
-server1;irmc1;RZ2;Rack 1;admin;geheim1;4711;time.customer.de
-server2;192.168.47.11;RZ1;Rack 4;admin;geheim2;08/15;ntp13@customer.com
-server3;irmc3.mydomain.de;RZ2;Rack 2;admin;geheim1;Leihstellung;time2.customer.org
